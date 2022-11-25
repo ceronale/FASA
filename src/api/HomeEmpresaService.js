@@ -19,7 +19,7 @@ export const HomeServiceEmpresa = async (data) => {
 	const response = axios(config)
 		.then(({ data: usuarioEmpresa }) => {
 			console.log(usuarioEmpresa);
-			return JSON.stringify(usuarioEmpresa);
+			return usuarioEmpresa;
 		})
 		.catch((error) => {
 			throw new error(error);

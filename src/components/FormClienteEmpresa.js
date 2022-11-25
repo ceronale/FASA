@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, Component, useEffect } from "react";
 import "../styles/FormClienteEmpresa.css";
 import styles from "../styles/FormPacienteCliente.css";
-import { EmpresaService } from "../api/EmpresaService";
+import { EmpresaService , ConvenioService} from "../api/EmpresaService";
+import { LIstaEmpresasService, } from "../api/LIstaEmpresasService";
 import {
 	Label,
 	LabelReq,
@@ -14,6 +15,7 @@ import Modal from "./Modal";
 import ModalAlert from "./ModalAlert";
 import BaseSelect from "react-select";
 import FixRequiredSelect from "../FixRequiredSelect";
+
 
 const initialForm = {
 	rut: '',
@@ -29,6 +31,13 @@ const initialForm = {
 };
 
 const FormClienteEmpresa = () => {
+	const [options, setOptions] = useState([]);
+	const [selectedOptions, setSelectedOptions] = useState([]);
+
+	useEffect(() => {
+		fetchDataSelect();
+	}, []);
+
 	const [msj, setMsj] = useState();
 	const [registerData, setRegisterData] = useState({
 		rut: '',
@@ -37,12 +46,14 @@ const FormClienteEmpresa = () => {
 		apellido2: '',
 		user: '',
 		passwd: '',
+		passwd2: '',
 		kamConvenios: '',
 		kamCorreo: '',
 		cargo: '',
 	});
 
 	const [showModal, setShowModal] = useState(false);
+
 	const handleClose = () => {
 		setShowModal(false);
 	}
@@ -66,13 +77,25 @@ const FormClienteEmpresa = () => {
 				[event.target.name]: event.target.value,
 			}));
 		}
+
+
 	};
+
+	const onChangeSelect = (e) => {
+		setSelectedOptions(Array.isArray(e) ? e.map(x => x.value) : []);
+	};
+
+
 
 	function updateStateOnchange(event, aux) {
 		setRegisterData((prev) => ({
 			...prev,
 			[event.target.name]: aux,
 		}));
+	}
+	
+	function setFormatCodigo() {
+
 	}
 
 	const clienteEmpresa = async (data) => {
@@ -82,31 +105,11 @@ const FormClienteEmpresa = () => {
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		var isPassValid = false;
-		const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-		var contains_number = /\d/.test(registerData.passwd);
-		var contains_special_character = format.test(registerData.passwd);
-		var contains_letter = /[a-zA-Z]/.test(registerData.passwd);
-		if (!contains_letter) {
-			setShowModal(true)
-			setMsj("La contraseña debe contener  al menos una letra")
-		} else if (!contains_number) {
-			setShowModal(true)
-			setMsj("La contraseña debe contener al menos un numero")
-		} else if (!contains_special_character) {
-			setShowModal(true)
-			setMsj("La contraseña debe contener al menos un caracter especial.")
-		} else if (registerData.passwd !== registerData.passwd2) {
-			setShowModal(true)
-			setMsj("Las contraseñas no coinciden")
-		} else {
-			isPassValid = true;
-		}
+		var isPassValid = contraseñaValidar();
 		if (isPassValid) {
 			clienteEmpresa(registerData)
 			const resp = await EmpresaService(registerData)
 			var aux = resp['outActualizar'][0]['outSeq'];
-			
 			if (aux === 0) {
 				setShowModal(true)
 				setMsj("El Cliente Empresa ya existe")
@@ -114,16 +117,63 @@ const FormClienteEmpresa = () => {
 			} else {
 				setShowModal(true)
 				setMsj("Cliente Empresa Creado")
+				const respConvenio = await ConvenioService(registerData.user,selectedOptions.toString());
+				console.log(respConvenio);
 				handleClear();
 			}
-
 		}
+	};
+
+	function contraseñaValidar() {
+		const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+		var contains_number = /\d/.test(registerData.passwd);
+		var contains_special_character = format.test(registerData.passwd);
+		var contains_letter = /[a-zA-Z]/.test(registerData.passwd);
+		var contains_upperletter = /[A-Z]/.test(registerData.passwd);
+		if (!contains_letter) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener  al menos una letra")
+			return false;
+		} else if (!contains_upperletter) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos una letra mayuscula")
+
+		} else if (!contains_number) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos un numero")
+			return false;
+		} else if (!contains_special_character) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos un caracter especial.")
+			return false;
+		} else if (registerData.passwd !== registerData.passwd2) {
+			setShowModal(true)
+			setMsj("Las contraseñas no coinciden")
+			return false;
+		} else {
+			return true;
+		}
+		return false;
+	};
+
+
+	async function fetchDataSelect() {
+		const resp2 = await LIstaEmpresasService();
+		var aux = resp2['empresa'];
+		let data = aux.map(function (element) {
+			return { value: `${element.idEmpresa}`, label: `${element.nombreEmpresa}` };
+		})
+		setOptions(data);
 	};
 
 	const handleClear = () => {
 		setRegisterData(initialForm);
+		setSelectedOptions([]);
 	};
 
+
+
+	//Select MultiOption
 	const Select = props => (
 		<FixRequiredSelect
 			{...props}
@@ -133,20 +183,14 @@ const FormClienteEmpresa = () => {
 	);
 
 
-	//Opciones Select 
-	const options = [
-		{ value: 'chocolate', label: 'Chocolate' },
-		{ value: 'strawberry', label: 'Strawberry' },
-		{ value: 'vanilla', label: 'Vanilla' }
-	]
 	return (
 		<main>
 			<form onSubmit={onSubmit}>
 				<div className="row align-items-center">
 					<div>
-						<div class="container text-center">
-							<div class="row">
-								<div class="col-6">
+						<div className="container text-center">
+							<div className="row">
+								<div className="col-6">
 									<div className="contenedorTitulo">
 										<label className="titulo">Informacion Personal</label>
 									</div>
@@ -198,7 +242,7 @@ const FormClienteEmpresa = () => {
 										/>
 									</GrupoInput>
 								</div>
-								<div class="col-6">
+								<div className="col-6">
 									<div className="contenedorTitulo">
 										<label className="titulo">Informacion Cuenta</label>
 									</div>
@@ -241,13 +285,13 @@ const FormClienteEmpresa = () => {
 										/>
 										<RestriccionPass>
 											La contraseña debe contener desde 7 a 20 caracteres,
-											se exige una letra, un numero y un caracter especial.
+											se exige una letra minuscula y una mayuscula, un numero y un caracter especial.
 										</RestriccionPass>
 									</GrupoInput>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-6">
+							<div className="row">
+								<div className="col-6">
 									<div className="contenedorTitulo">
 										<label className="titulo">Informacion KAM</label>
 									</div>
@@ -280,7 +324,7 @@ const FormClienteEmpresa = () => {
 										</div>
 									</GrupoInput>
 								</div>
-								<div class="col-6">
+								<div className="col-6">
 									<div className="contenedorTitulo">
 										<label className="titulo">Informacion Empresa</label>
 									</div>
@@ -297,7 +341,8 @@ const FormClienteEmpresa = () => {
 									</GrupoInput>
 									<GrupoInput>
 										<Label>Empresa (s) <LabelReq> *</LabelReq></Label>
-										<Select options={options} isMulti required />
+										<Select options={options}  value={options.filter(obj => selectedOptions.includes(obj.value))}
+											onChange={onChangeSelect} isMulti required />
 									</GrupoInput>
 									{/* <select name="cars" id="cars">
 									<option value="volvo">Volvo</option>
@@ -308,6 +353,7 @@ const FormClienteEmpresa = () => {
 					</div>
 				</div>
 			</form>
+
 			<Modal showModal={showModal} onClick={handleClose} >
 
 				<ModalAlert

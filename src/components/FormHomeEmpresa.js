@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Label, GrupoInput, InputH } from "./Formularios";
 import { Route, useLocation } from "react-router-dom";
-import { HomeServiceEmpresa } from "../api/HomeServiceEmpresa";
+import { HomeServiceEmpresa } from "../api/HomeEmpresaService";
 //import { LoginService } from "../api/LoginService";
 
 const FormHome = () => {
@@ -10,7 +10,7 @@ const FormHome = () => {
 		nombre: '',
 		apellido: '',
 		apellido2: '',
-		user: '',
+		correo: '',
 		kamConvenios: '',
 		kamCorreo: '',
 		cargo: '',
@@ -22,15 +22,15 @@ const FormHome = () => {
 
 	const home = async (email) => {
 		const response = await HomeServiceEmpresa(email)
-		const datosUsuarios = JSON.parse(response)
-		console.log(datosUsuarios.usuario[0].apellido)
-        const { rut, nombre, apellido, apellido2, user, kamConvenios, kamCorreo, cargo } = datosUsuarios.usuario[0];
+		console.log(response)
+		console.log(response.usuarioEmpresa[0].apellido)
+        const { rut, nombre, apellido, apellido2, correo, kamConvenios, kamCorreo, cargo } = response.usuarioEmpresa[0];
 		setInitialState({
 			rut: rut,
             nombre: nombre,
             apellido: apellido,
             apellido2: apellido2,
-            user: user,
+            correo: correo,
             kamConvenios: kamConvenios,
             kamCorreo: kamCorreo,
             cargo: cargo,
@@ -96,23 +96,14 @@ const FormHome = () => {
 									<InputH
 									className="inputForm"
 									type="text"
-									value={initialState.user}
+									value={initialState.correo}
 									readOnly
 								/>
-								</GrupoInput>
-								<GrupoInput>
-									<Label>Contraseña</Label>
-									<InputH
-									className="inputForm"
-									type="text"
-									value={initialState.passwd}
-									readOnly
-								/>
-								</GrupoInput>							
+								</GrupoInput>					
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-6">
+						<div className="row">
+							<div className="col-6">
 								<div className="contenedorTitulo">
 									<label className="titulo">Informacion KAM</label>
 								</div>

@@ -29,3 +29,26 @@ export const EmpresaService = async (data) => {
 
 	return response;
 }
+export const ConvenioService = async (user,codigo) => {
+
+	const config = {
+		method: 'put',
+		url: 'http://localhost:8181/cxf/convenios/services/actualizarConvenio',
+		headers: { 
+		  'user': user, 
+		  'codigo': codigo
+		}
+	  };
+	const response = axios(config)
+		.then(({ data: outActualizar }) => {
+			console.log(outActualizar);
+			return outActualizar;
+		})
+		.catch((error) => {
+			return error;
+		});
+
+	return response;
+}
+
+

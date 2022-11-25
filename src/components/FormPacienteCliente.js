@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import { PacienteService } from "../api/PacienteService";
-import {
-	Label,
-	LabelReq,
-	Inputs,
-	Inputp,
-	GrupoInput,
-	RestriccionPass,
-} from "../components/Formularios";
+import { PacienteService, GenerarToken, ValidarToken } from "../api/PacienteService";
+import { useNavigate } from 'react-router-dom';
+import { Label, LabelReq, Inputs, Inputp, GrupoInput, RestriccionPass, } from "../components/Formularios";
 import { NavLink } from "react-router-dom";
 import Modal from "./Modal";
 import ModalAlert from "./ModalAlert";
 import { ValidatePass } from "../api/ValidatePass";
+
 const initialForm = {
 	rut: '',
 	ndocumento: '',
@@ -21,17 +16,18 @@ const initialForm = {
 	celular: '',
 	user: '',
 	passwd: '',
+	passwd2: '',
 };
+
 // import { Validate } from "../api/Validate";
 // import { Validate } from "../api/Validate";
 
 const FormPacienteCliente = () => {
+
+	const navigate = useNavigate();
 	const [msj, setMsj] = useState();
 	const [checkBox, setCheckbox] = useState(false);
-
-	const [inputRutValue, setInputRutValue] = useState("");
-
-
+	const delay = ms => new Promise(res => setTimeout(res, ms));
 	const [registerData, setRegisterData] = useState({
 		rut: '',
 		ndocumento: '',
@@ -45,41 +41,18 @@ const FormPacienteCliente = () => {
 		terminos: 'false'
 	});
 
-
-
-
-
 	const [showModal, setShowModal] = useState(false);
 	const handleClose = () => {
 		setShowModal(false);
 	}
 
+	const [checkToken, setcheckToken] = useState(false);
+	const [token, setToken] = useState("");
+
+
+
 	const { rut, ndocumento, nombre, apellido, apellido2, celular, user, passwd, passwd2 } = registerData;
 
-	/*
-		function formatRut(value) {
-			// if input value is falsy eg if the user deletes the input, then just return
-			if (!value) return value;
-			const valueLength = value.length;
-	
-			value=value.replace(/\./g, '').replace('-', '');
-	
-			if (value.match(/^(\d{2})(\d{3}){2}(\w{1})$/)) {
-			  value = value.replace(/^(\d{2})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
-			}
-			else if (value.match(/^(\d)(\d{3}){2}(\w{0,1})$/)) {
-			  value = value.replace(/^(\d)(\d{3})(\d{3})(\w{0,1})$/, '$1.$2.$3-$4');
-			}
-			else if (value.match(/^(\d)(\d{3})(\d{0,2})$/)) {
-			  value = value.replace(/^(\d)(\d{3})(\d{0,2})$/, '$1.$2.$3');
-			}
-			else if (value.match(/^(\d)(\d{0,2})$/)) {
-			  value = value.replace(/^(\d)(\d{0,2})$/, '$1.$2');
-			}
-		
-			return value;
-		}
-	*/
 	const onchange = (event) => {
 		var aux;
 		//Validacion de campos de formulario solo letras
@@ -106,6 +79,7 @@ const FormPacienteCliente = () => {
 			}));
 		}
 	};
+
 	function updateStateOnchange(event, aux) {
 		setRegisterData((prev) => ({
 			...prev,
@@ -120,65 +94,86 @@ const FormPacienteCliente = () => {
 		}));
 	};
 
+	const handleClickConfirmarToken = async (e) => {
+		e.preventDefault();
+		const respValidToken = await ValidarToken(token, registerData.user);
+		var msj = respValidToken['validaToken'][0]['detalleResultado'];
+		setShowModal(true)
+		setMsj(msj)
+		if (respValidToken['validaToken'][0]['codigoResultado'] === 0) {
+			handleClear();
+			//Redireccionar al home usuario cliente recien creado
+			await delay(5000);
+			navigate(`/Home/${registerData.user}`)
+
+		}
+
+	};
+
+
+
+	const onChangeToken = (event) => {
+		setToken(event.target.value);
+	}
+
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		var isPassValid = false;
-		const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-		var contains_number = /\d/.test(registerData.passwd);
-		var contains_special_character = format.test(registerData.passwd);
-		var contains_letter = /[a-zA-Z]/.test(registerData.passwd);
-		if (!contains_letter) {
-			setShowModal(true)
-			setMsj("La contraseña debe contener  al menos una letra")
-		} else if (!contains_number) {
-			setShowModal(true)
-			setMsj("La contraseña debe contener al menos un numero")
 
-		} else if (!contains_special_character) {
-			setShowModal(true)
-			setMsj("La contraseña debe contener al menos un caracter especial.")
-		} else if (registerData.passwd !== registerData.passwd2) {
-			setShowModal(true)
-			setMsj("Las contraseñas no coinciden")
-		}
-		else {
-			isPassValid = true;
-		}
-
+		var isPassValid = contraseñaValidar();
 		if (isPassValid) {
 			const resp = await PacienteService(registerData)
-			
 			var aux = resp['outActualizar'][0]['outSeq'];
-		
 			if (aux === 0) {
-
 				setShowModal(true)
 				setMsj("El Paciente/Cliente ya existe")
 			} else {
 				setShowModal(true)
 				setMsj("Paciente Cliente Creado")
-				handleClear();
+				//Envio de token 
+				const respToken = await GenerarToken(registerData.user);
+				setcheckToken(true);
 			}
-			
 		}
 
+	};
 
+	function contraseñaValidar() {
+		const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+		var contains_number = /\d/.test(registerData.passwd);
+		var contains_special_character = format.test(registerData.passwd);
+		var contains_letter = /[a-zA-Z]/.test(registerData.passwd);
+		var contains_upperletter = /[A-Z]/.test(registerData.passwd);
+		if (!contains_letter) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos una letra")
+			return false;
+		} else if (!contains_upperletter) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos una letra mayuscula")
+		} else if (!contains_number) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos un numero")
+			return false;
+		} else if (!contains_special_character) {
+			setShowModal(true)
+			setMsj("La contraseña debe contener al menos un caracter especial.")
+			return false;
+		} else if (registerData.passwd !== registerData.passwd2) {
+			setShowModal(true)
+			setMsj("Las contraseñas no coinciden")
+			return false;
+		} else {
+			return true;
+		}
+		return false;
 	};
 
 	const handleClear = () => {
 		setRegisterData(initialForm);
+		setToken("");
 	};
 
-	/*
-		const handleInput = (e) => {
-			// this is where we'll call the phoneNumberFormatter function
-			const formattedPhoneNumber = formatPhoneNumber(e.target.value);
-			console.log("aa");
-			// we'll set the input value using our setInputValue
-			setInputRutValue(formattedPhoneNumber);
-			<input onChange={(e) => handleInput(e)} value={inputRutValue} />
-		};
-	*/
+
 	return (
 		<main>
 			<form onSubmit={onSubmit}>
@@ -189,7 +184,6 @@ const FormPacienteCliente = () => {
 								<label className="titulo">Informacion Personal</label>
 							</div>
 							<GrupoInput>
-
 								<Label>RUT <LabelReq> *</LabelReq></Label>
 								<Inputp
 									type="text"
@@ -289,7 +283,6 @@ const FormPacienteCliente = () => {
 									max="20"
 									required
 								/>
-
 							</GrupoInput>
 							<GrupoInput>
 								<Label>Confirmar Contraseña <LabelReq> *</LabelReq></Label>
@@ -303,37 +296,63 @@ const FormPacienteCliente = () => {
 									max="20"
 									required
 								/>
-								<RestriccionPass>
-									La contraseña debe contener desde 7 a 20 caracteres,
-									se exige una letra, un numero y un caracter especial.
-								</RestriccionPass>
+								{checkToken === false && (
+									<RestriccionPass>
+										La contraseña debe contener desde 7 a 20 caracteres,
+										se exige una letra minuscula y una mayuscula, un numero y un caracter especial.
+									</RestriccionPass>
+								)}
 							</GrupoInput>
-							<div className="boxTerminos">
-								<input
-									type="checkbox"
-									name="terminos"
-									value={checkBox}
-									checked={checkBox}
-									onChange={handleClickRemember}
-									required
-								/>
-								<div className="aceptoTerminos">
-									<p> Acepto los <NavLink className="navTerminos" to="">Terminos y condiciones</NavLink></p>
+							{checkToken === false && (
+								<div>
+									<div className="boxTerminos">
+										<input
+											type="checkbox"
+											name="terminos"
+											value={checkBox}
+											checked={checkBox}
+											onChange={handleClickRemember}
+											required
+										/>
+										<div className="aceptoTerminos">
+											<p> Acepto los <NavLink className="navTerminos" to="">Terminos y condiciones</NavLink></p>
+										</div>
+									</div>
+									<div className="CrearPaciente">
+										<button className="buttomCrearCuenta" type="submit" >Crear Cuenta</button>
+
+										<div className="CampoRequerido">
+											<span>* Campos requeridos</span>
+										</div>
+									</div>
 								</div>
-							</div>
-							<div className="CrearPaciente">
-								<button className="buttomCrearCuenta" type="submit" >Confirmar Cuenta</button>
-								<div className="CampoRequerido">
-									<span>* Campos requeridos</span>
+							)}
+							{checkToken === !false && (
+								<div>
+									<GrupoInput>
+										<RestriccionPass>
+											Se ha enviado un token de verificación a tu correo
+										</RestriccionPass>
+										<Label>Confirmar Token <LabelReq> *</LabelReq></Label>
+										<Inputs
+											type="text"
+											placeholder=""
+											name="token"
+											value={token}
+											onChange={onChangeToken}
+											required />
+									</GrupoInput>
+									<div className="CrearPaciente">
+										<button className="buttomCrearCuenta" onClick={handleClickConfirmarToken} >Confirmar Token</button>
+									</div>
 								</div>
-							</div>
+							)}
 						</div>
 					</div>
 				</div>
 			</form>
 
 			<Modal showModal={showModal} onClick={handleClose} >
-
 				<ModalAlert
 					msj={msj}
 					onClick={handleClose}

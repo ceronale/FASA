@@ -28,3 +28,45 @@ export const PacienteService = async (data) => {
 
 	return response;
 }
+
+export const GenerarToken = async (data) => {
+	console.log(data);
+	const config = {
+		method: 'post',
+		url: 'http://localhost:8181/cxf/generatoken/services/generatoken',
+		headers: {
+			'user': data,
+		}
+	};
+
+	const response = axios(config)
+		.then(({ data: outActualizar }) => {
+			console.log(outActualizar);
+			return outActualizar;
+		})
+		.catch((error) => {
+			return error;
+		});
+
+	return response;
+}
+export const ValidarToken = async (token, user) => {
+	const config = {
+		method: 'post',
+		url: 'http://localhost:8181/cxf/validaToken/services/validartoken',
+		headers: {
+			'user': user,
+			'token': token
+		}
+	};
+
+	const response = axios(config)
+		.then(({ data: outActualizar }) => {
+			console.log(outActualizar);
+			return outActualizar;
+		})
+		.catch(function (error) {
+			return error;
+		});
+	return response;
+}

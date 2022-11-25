@@ -5,14 +5,14 @@ const ModalAlert = ({ onclick, msj, textBtn }) => {
 
 
 	return (
-		<div class="container text-center">
-			<div class="row row-cols-2">
-				<div class="col-12 col-md-12">
+		<div className="container text-center">
+			<div className="row row-cols-2">
+				<div className="col-12 col-md-12">
 				</div>
-				<div class="col-12 col-md-12"><h1>{msj}</h1></div>
+				<div className="col-12 col-md-12"><h1>{msj}</h1></div>
 
-				<div class="col-12 col-md-12 mt-4">
-					<div class="row justify-content-md-center">
+				<div className="col-12 col-md-12 mt-4">
+					<div className="row justify-content-md-center">
 						<button className="buttomCrearCuenta" type="submit" onClick={onclick}>{textBtn}</button>
 					</div>
 				</div>

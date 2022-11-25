@@ -75,14 +75,28 @@ const FormLogin = () => {
 		// Condicional segun el codigo de respuesta (0=ok - 1=No Existe - 2=Usuario Invalido - 3=Pass Expirada)
 		if (r.login[0].codigoResultadoLogin === 0) {
 			console.log('Usuario Correcto');
-			navigate(`/Home/${registerData.email}`)
+			switch (r.login[0].tipo) {
+				
+				case "Empresa":
+					console.log("Llegue 2");
+					navigate(`/HomeEmpresa/${registerData.email}`);
+					break;
+				case "Administrador":
+					navigate(`/Home/${registerData.email}`);
+					break;
+				case "Paciente":
+					navigate(`/Home/${registerData.email}`);
+					break;
+				default:
+			}
+
 		} else if (r.login[0].codigoResultadoLogin === 1) {
 			setShowModal(true)
 			setMsj("El usuario no existe")
 			console.log('El usuario no existe')
 		} else if (r.login[0].codigoResultadoLogin === 2) {
 			console.log('Usuario Invalido')
-			setShowModal(true)	
+			setShowModal(true)
 			setMsj("Usuario Invalido")
 		} else if (r.login[0].codigoResultadoLogin === 3) {
 			console.log('Clave Expirada')
@@ -110,7 +124,7 @@ const FormLogin = () => {
 								placeholder=""
 								name="email"
 								value={email}
-								onChange={onchange} 
+								onChange={onchange}
 								required
 							/>
 						</GrupoInput>

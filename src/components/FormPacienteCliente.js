@@ -5,7 +5,6 @@ import { Label, LabelReq, Inputs, Inputp, GrupoInput, RestriccionPass, } from ".
 import { NavLink } from "react-router-dom";
 import Modal from "./Modal";
 import ModalAlert from "./ModalAlert";
-import { ValidatePass } from "../api/ValidatePass";
 
 const initialForm = {
 	rut: '',
@@ -357,7 +356,7 @@ const FormPacienteCliente = () => {
 					msj={msj}
 					onClick={handleClose}
 					onClickSecondary={() => setShowModal(false)}
-					textBtn={"cancel"}
+					textBtn={"Aceptar"}
 				/>
 			</Modal>
 		</main >

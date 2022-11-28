@@ -360,7 +360,7 @@ const FormClienteEmpresa = () => {
 					msj={msj}
 					onClick={handleClose}
 					onClickSecondary={() => setShowModal(false)}
-					textBtn={"cancel"}
+					textBtn={"Aceptar"}
 				/>
 			</Modal>
 		</main>

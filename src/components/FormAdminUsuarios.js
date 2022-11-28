@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ContenedorTitulo, InputB } from "./Formularios";
 import { EliminarUsuario } from "../api/EliminarUsuario";
 import Modal from "./Modal";
-import ModalAlert from "./ModalAlert";
-
+import ModalAlert from "./ModalAlert/indexEliminar";
 import "../styles/AdminUsuarios.css";
 
 
@@ -79,10 +78,11 @@ const FormAdminUsuarios = () => {
             </div>
             <Modal showModal={showModal} onClick={handleClose} >
                 <ModalAlert
-                    msj={msj}
+                    msj={"¿Desea eliminar el usuario seleccionado?"}
                     onClick={handleClose}
                     onClickSecondary={() => setShowModal(false)}
-                    textBtn={"cancel"}
+                    textBtn={"Si"}
+                    textBtn2={"No"}
                 />
             </Modal>
         </main>

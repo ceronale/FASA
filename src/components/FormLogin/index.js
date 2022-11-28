@@ -173,7 +173,7 @@ const FormLogin = () => {
 							msj={msj}
 							onClick={handleClose}
 							onClickSecondary={() => setShowModal(false)}
-							textBtn={"cancel"}
+							textBtn={"Aceptar"}
 						/>
 					</Modal>
 				</div>

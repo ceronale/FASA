@@ -25,3 +25,7 @@
     color: rgb(232, 232, 232);
     text-decoration-line: none;
 }
+
+.opcion:hover {
+    color: rgb(232, 232, 232);
+}

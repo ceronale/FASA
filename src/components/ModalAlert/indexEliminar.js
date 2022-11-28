@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import "../ModalAlert/ModalAlert.css";
+
 
 const ModalAlert = ({ onclick, msj, textBtn, textBtn2 }) => {
 
@@ -12,8 +14,9 @@ const ModalAlert = ({ onclick, msj, textBtn, textBtn2 }) => {
 				<div className="col-12 col-md-12"><h3>{msj}</h3></div>
 
 				<div className="col-12 col-md-12 mt-4">
-					<div className="botonesEliminar">
-						<button className="buttomEliminar" type="submit" onClick={onclick}>{textBtn}</button>
+					<div className="row justify-content-md-center">
+						<button className="buttomCrearCuenta" type="submit" onClick={onclick}>{textBtn}</button>
+                        <button className="buttomCrearCuenta" type="submit" onClick={onclick}>{textBtn2}</button>
 					</div>
 				</div>
 			</div>
@@ -24,6 +27,7 @@ const ModalAlert = ({ onclick, msj, textBtn, textBtn2 }) => {
 ModalAlert.defaultProps = {
 	msj: '',
 	textBtn: '',
+    textBtn2: '',
 	textBtnSecondary: '',
 	display: '',
 	img: '',
@@ -34,6 +38,7 @@ ModalAlert.defaultProps = {
 ModalAlert.propTypes = {
 	msj: PropTypes.string,
 	textBtn: PropTypes.string,
+    textBtn2: PropTypes.string,
 	textBtnSecondary: PropTypes.string,
 	img: PropTypes.string,
 	oneOrTwo: PropTypes.bool,

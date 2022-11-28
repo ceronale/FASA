@@ -59,7 +59,7 @@ const GrupoInput = styled.div`
     position: relative;
     z.index: 90;
     padding-top: 6px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     text-align: left;
 `;
 

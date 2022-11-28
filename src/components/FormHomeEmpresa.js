@@ -139,9 +139,6 @@ const FormHome = () => {
 									readOnly
 								/>
 								</GrupoInput>
-								<GrupoInput>
-									<Label>Empresa (s)</Label>
-								</GrupoInput>
 							</div>
 						</div>
 					</div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Label, GrupoInput, InputH } from "./Formularios";
-import { useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { HomeService } from "../api/HomeService";
+import "../styles/Home.css";
 //import { LoginService } from "../api/LoginService";
 
 const FormHome = () => {
@@ -100,6 +101,9 @@ const FormHome = () => {
 									readOnly
 								/>
 							</GrupoInput>
+							<div>
+								<NavLink className="navlink">Editar Informacion</NavLink>
+							</div>
 						</GrupoInput>{" "}
 					</div>
 					<div className="col">
@@ -118,6 +122,9 @@ const FormHome = () => {
 									readOnly
 								/>
 							</GrupoInput>
+							<div>
+								<NavLink className="navlink">Modificar Contraseña</NavLink>
+							</div>
 						</GrupoInput>{" "}
 					</div>
 				</div>

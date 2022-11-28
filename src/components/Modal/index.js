@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import cs from 'classnames';
+import React from 'react';
 
 import closeX from '../img/closeX.svg'
 
@@ -57,7 +58,7 @@ const Modal = ({
 							onClick={onCloseHandle}
 						>
 							<span aria-hidden="true" className="p-0 pe-4">
-								<img src={closeX} alt="Cuenta" width="16" />
+								<img src={closeX} alt="Cuenta" width="12" />
 							</span>
 						</a>
 					</div>

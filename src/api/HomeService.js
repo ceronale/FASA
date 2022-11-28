@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 export const HomeService = async (data) => {
-	console.log(data);
+	
 	// const data = JSON.stringify({
 	// 	//"user":"user@email.com",
 	// 	//"password":"password"
@@ -18,7 +18,6 @@ export const HomeService = async (data) => {
 	};
 	const response = axios(config)
 		.then(({ data: outLoginModel }) => {
-			console.log(outLoginModel);
 			return JSON.stringify(outLoginModel);
 		})
 		.catch((error) => {

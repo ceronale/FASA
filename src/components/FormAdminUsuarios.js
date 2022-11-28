@@ -3,19 +3,37 @@ import { useNavigate } from "react-router-dom";
 import { ContenedorTitulo, InputB } from "./Formularios";
 import { EliminarUsuario } from "../api/EliminarUsuario";
 import Modal from "./Modal";
-import ModalAlert from "./ModalAlert/indexEliminar";
+import ModalAlertConfirmar from "./ModalAlert/indexConfirmar";
+import ModalAlert from './ModalAlert';
 import "../styles/AdminUsuarios.css";
 
 
 const FormAdminUsuarios = () => {
     const [msj, setMsj] = useState();
+    const [showModalConfirmar, setShowModalConfirmar] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const history = useNavigate();
+    const [idElminar, setIdElminar] = useState("");
+
+    const handleCloseConfirmar = () => {
+        setShowModalConfirmar(false);
+    }
     const handleClose = () => {
         setShowModal(false);
     }
 
-    const history = useNavigate();
-    const [idElminar, setIdElminar] = useState("");
+    const handleYes = async () => {
+        const resp = await EliminarUsuario(idElminar)
+        var codigoRespuesta = resp['eliminar'][0]['codigoRespuesta'];
+        var detalleRespuesta = resp['eliminar'][0]['detalleRespuesta'];
+        setShowModalConfirmar(false);
+        setShowModal(true)
+        setMsj(detalleRespuesta)
+        if(codigoRespuesta==0){
+            setIdElminar("");
+        }
+    }
+
 
     const onSubmit = async (e) => {
         history("/NuevoClienteEmpresa");
@@ -24,22 +42,16 @@ const FormAdminUsuarios = () => {
     //Llamada a la api para eliminar usuario.
     const onSubmitEliminar = async (e) => {
         e.preventDefault();
-
-        const resp = await EliminarUsuario(idElminar)
-        var codigoRespuesta = resp['eliminar'][0]['codigoRespuesta'];
-        var detalleRespuesta = resp['eliminar'][0]['detalleRespuesta'];
-        console.log(resp);
-        setShowModal(true)
-        setMsj(detalleRespuesta)
-
-
+        setShowModalConfirmar(true)
+        setMsj("¿Desea eliminar el usuario seleccionado?")
     };
+
 
     return (
         <main>
-            <div class="container text-center">
-                <div class="row">
-                    <div class="col">
+            <div className="container text-center">
+                <div className="row">
+                    <div className="col">
                         <ContenedorTitulo>
                             <label className="titulo">Agregar un nuevo Cliente Empresa</label>
                         </ContenedorTitulo>
@@ -50,7 +62,7 @@ const FormAdminUsuarios = () => {
                             <button className="buttonAgregarUsuario" onClick={onSubmit}> + Agregar Usuario</button>
                         </div>
                     </div>
-                    <div class="col">
+                    <div className="col">
                         <ContenedorTitulo>
                             <label className="titulo">Eliminar usuario existente</label>
                         </ContenedorTitulo>
@@ -76,13 +88,20 @@ const FormAdminUsuarios = () => {
                     </div>
                 </div>
             </div>
-            <Modal showModal={showModal} onClick={handleClose} >
-                <ModalAlert
-                    msj={"¿Desea eliminar el usuario seleccionado?"}
-                    onClick={handleClose}
-                    onClickSecondary={() => setShowModal(false)}
+            <Modal showModal={showModalConfirmar} onClick={handleCloseConfirmar} >
+                <ModalAlertConfirmar
+                    msj={msj}
+                    onClick={handleYes}
+                    onClickSecondary={handleCloseConfirmar}
                     textBtn={"Si"}
                     textBtn2={"No"}
+                />
+            </Modal>
+            <Modal showModal={showModal} onClick={handleClose} >
+                <ModalAlert
+                    msj={msj}
+                    onClick={handleClose}
+                    textBtn={"Aceptar"}
                 />
             </Modal>
         </main>

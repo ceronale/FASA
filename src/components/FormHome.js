@@ -17,12 +17,12 @@ const FormHome = () => {
 	const location = useLocation();
 
 	const emailparam = location.pathname.split("/")
-	console.log(emailparam[2])
+	
 
 	const home = async (email) => {
 		const response = await HomeService(email)
 		const datosUsuarios = JSON.parse(response)
-		console.log(datosUsuarios.usuario[0].apellido)
+		
 		const { rut, nombre, apellido, apellido2, correo, celular } = datosUsuarios.usuario[0];
 		setInitialState({
 			rut: rut,

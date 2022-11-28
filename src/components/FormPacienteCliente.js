@@ -40,9 +40,19 @@ const FormPacienteCliente = () => {
 		terminos: 'false'
 	});
 
+	const [tokenIsValid, setTokenIsValid] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const handleClose = () => {
 		setShowModal(false);
+	}
+
+	const handleCloseToken = () => {
+		setShowModal(false);
+		if (tokenIsValid) {
+			//Redireccionar al home usuario cliente recien creado
+			navigate(`/Home/${registerData.user}`);
+			handleClear();
+		}
 	}
 
 	const [checkToken, setcheckToken] = useState(false);
@@ -99,12 +109,10 @@ const FormPacienteCliente = () => {
 		var msj = respValidToken['validaToken'][0]['detalleResultado'];
 		setShowModal(true)
 		setMsj(msj)
-		if (respValidToken['validaToken'][0]['codigoResultado'] === 0) {
-			handleClear();
-			//Redireccionar al home usuario cliente recien creado
-			await delay(5000);
-			navigate(`/Home/${registerData.user}`)
 
+		if (respValidToken['validaToken'][0]['codigoResultado'] === 0) {
+		
+			setTokenIsValid(true);
 		}
 
 	};
@@ -354,7 +362,7 @@ const FormPacienteCliente = () => {
 			<Modal showModal={showModal} onClick={handleClose} >
 				<ModalAlert
 					msj={msj}
-					onClick={handleClose}
+					onClick={handleCloseToken}
 					onClickSecondary={() => setShowModal(false)}
 					textBtn={"Aceptar"}
 				/>

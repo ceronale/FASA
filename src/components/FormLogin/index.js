@@ -168,12 +168,11 @@ const FormLogin = () => {
 					</form>
 
 					<Modal showModal={showModal} onClick={handleClose} >
-
 						<ModalAlert
 							msj={msj}
 							onClick={handleClose}
 							onClickSecondary={() => setShowModal(false)}
-							textBtn={"Aceptar"}
+						
 						/>
 					</Modal>
 				</div>

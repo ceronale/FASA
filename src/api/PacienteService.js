@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 export const PacienteService = async (data) => {
-	console.log(data);
+
 	const config = {
 		method: 'put',
 		url: 'http://localhost:8181/cxf/actualizar/services/actualizarPaciente',
@@ -19,7 +19,7 @@ export const PacienteService = async (data) => {
 	};
 	const response = axios(config)
 		.then(({ data: outActualizar }) => {
-			console.log(outActualizar);
+			
 			return outActualizar;
 		})
 		.catch((error) => {
@@ -30,7 +30,6 @@ export const PacienteService = async (data) => {
 }
 
 export const GenerarToken = async (data) => {
-	console.log(data);
 	const config = {
 		method: 'post',
 		url: 'http://localhost:8181/cxf/generatoken/services/generatoken',
@@ -38,7 +37,6 @@ export const GenerarToken = async (data) => {
 			'user': data,
 		}
 	};
-
 	const response = axios(config)
 		.then(({ data: outActualizar }) => {
 			console.log(outActualizar);
@@ -62,7 +60,7 @@ export const ValidarToken = async (token, user) => {
 
 	const response = axios(config)
 		.then(({ data: outActualizar }) => {
-			console.log(outActualizar);
+		
 			return outActualizar;
 		})
 		.catch(function (error) {

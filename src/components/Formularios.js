@@ -113,7 +113,7 @@ const InputB = styled.input`
     font-family: Arial, Helvetica, sans-serif
     letter-spacing: 0.8px
     color: red;
-    width: 40%;
+    width: 50%;
     background: #FFFFFF;
     border-radius: 3px;
     height: 45px;

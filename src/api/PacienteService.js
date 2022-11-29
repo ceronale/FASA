@@ -4,7 +4,7 @@ export const PacienteService = async (data) => {
 
 	const config = {
 		method: 'put',
-		url: 'http://localhost:8181/cxf/actualizar/services/actualizarPaciente',
+		url: 'http://150.100.253.61:8181/cxf/actualizar/services/actualizarPaciente',
 		headers: {
 			'Content-Type': 'application/json',
 			rut: data.rut,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Label, GrupoInput, InputH } from "./Formularios";
-import { Route, useLocation } from "react-router-dom";
+import { Route, useLocation, NavLink } from "react-router-dom";
 import { HomeServiceEmpresa } from "../api/HomeEmpresaService";
 //import { LoginService } from "../api/LoginService";
 
@@ -99,6 +99,9 @@ const FormHome = () => {
 									value={initialState.correo}
 									readOnly
 								/>
+								<div>
+									<NavLink className="navlink">Modificar Contraseña</NavLink>
+								</div>
 								</GrupoInput>					
 							</div>
 						</div>

@@ -4,7 +4,7 @@ export const EmpresaService = async (data) => {
 	console.log(data);
 	const config = {
 		method: 'put',
-		url: 'http://localhost:8181/cxf/actualizarEmpresa/services/actualizarEmpresa',
+		url: 'http://150.100.253.61:8181/cxf/actualizarEmpresa/services/actualizarEmpresa',
 		headers: {
 			'Content-Type': 'application/json',
 			rut: data.rut,

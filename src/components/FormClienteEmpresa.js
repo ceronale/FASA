@@ -98,16 +98,10 @@ const FormClienteEmpresa = () => {
 
 	}
 
-	const clienteEmpresa = async (data) => {
-		const resp = await EmpresaService()
-		return resp
-	}
-
 	const onSubmit = async (e) => {
 		e.preventDefault();
 		var isPassValid = contraseñaValidar();
 		if (isPassValid) {
-			clienteEmpresa(registerData)
 			const resp = await EmpresaService(registerData)
 			var aux = resp['outActualizar'][0]['outSeq'];
 			if (aux === 0) {

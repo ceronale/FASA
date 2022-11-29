@@ -1,4 +1,4 @@
-import { React, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import "../ModalAlert/ModalAlert.css";
 
@@ -21,7 +21,7 @@ const ModalAlertConfirmar = ({ onClick, onClickSecondary, msj, textBtn, textBtn2
 			<div className="row row-cols-2">
 				<div className="col-12 col-md-12">
 				</div>
-				<div className="col-12 col-md-12"><h3>{msj}</h3></div>
+				<div className="col-12 col-md-12"><h4>{msj}</h4></div>
 			</div>
 			<div class="row justify-content-center">
 					<div className="col-4">

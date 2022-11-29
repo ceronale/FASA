@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import cs from 'classnames';
 import React from 'react';
 
+
 import closeX from '../img/closeX.svg'
 
 import styles from './styles.module.css';
@@ -62,7 +63,7 @@ const Modal = ({
 							</span>
 						</a>
 					</div>
-					<div className="modal-body p-0 px-0">{children}</div>
+					<div>{children}</div>
 				</div>
 			</div>
 		</CSSTransition>

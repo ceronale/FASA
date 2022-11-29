@@ -14,6 +14,7 @@ import {
 } from "../Formularios";
 import Modal from '../Modal';
 import ModalAlert from '../ModalAlert';
+import { Validate } from "../../api/Validate";
 
 const FormLogin = () => {
 	const [msj, setMsj] = useState();
@@ -172,7 +173,7 @@ const FormLogin = () => {
 							msj={msj}
 							onClick={handleClose}
 							onClickSecondary={() => setShowModal(false)}
-						
+							textBtn={"Aceptar"}
 						/>
 					</Modal>
 				</div>
